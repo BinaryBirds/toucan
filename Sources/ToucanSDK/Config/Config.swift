@@ -95,6 +95,25 @@ struct Config {
 
     // MARK: -
 
+    struct Site {
+        
+        
+        enum Keys {
+            static let baseUrl = "baseUrl"
+        }
+
+        let baseUrl: String
+        
+        init(baseUrl: String) {
+            self.baseUrl = baseUrl
+        }
+
+        init(_ dict: [String: Any]) {
+            self.baseUrl = dict.string(Keys.baseUrl)
+                ?? Config.defaults.site.baseUrl
+        }
+    }
+    
     struct Contents {
 
         struct Page {
@@ -123,7 +142,6 @@ struct Config {
         }
 
         let folder: String
-        let dateFormat: String
         let assets: Location
         let home: Page
         let notFound: Page
@@ -131,14 +149,12 @@ struct Config {
 
         init(
             folder: String,
-            dateFormat: String,
             assets: Config.Location,
             home: Page,
             notFound: Page,
             rss: RSS
         ) {
             self.folder = folder
-            self.dateFormat = dateFormat
             self.assets = assets
             self.home = home
             self.notFound = notFound
@@ -149,10 +165,6 @@ struct Config {
             self.folder =
                 dict.string(Location.Keys.folder)
                 ?? Config.defaults.contents.folder
-
-            self.dateFormat =
-                dict.string(Keys.dateFormat)
-                ?? Config.defaults.contents.dateFormat
 
             let assets = dict.dict(Keys.assets)
             self.assets =
@@ -262,23 +274,27 @@ struct Config {
         static let transformers = "transformers"
     }
 
-    let themes: Themes
+    let site: Site
     let contents: Contents
+    let themes: Themes
     let transformers: Transformers
 
     init(
-        themes: Themes,
+        site: Site,
         contents: Contents,
+        themes: Themes,
         transformers: Transformers
     ) {
-        self.themes = themes
+        self.site = site
         self.contents = contents
+        self.themes = themes
         self.transformers = transformers
     }
 
     init(_ dict: [String: Any]) {
-        self.themes = .init(dict.dict(Keys.themes))
+        self.site = .init(dict.dict(Keys.site))
         self.contents = .init(dict.dict(Keys.contents))
+        self.themes = .init(dict.dict(Keys.themes))
         self.transformers = .init(dict.dict(Keys.transformers))
     }
 }
@@ -286,17 +302,12 @@ struct Config {
 extension Config {
 
     static let `defaults` = Config(
-        themes: .init(
-            use: "default",
-            folder: "themes",
-            assets: .init(folder: "assets"),
-            templates: .init(folder: "templates"),
-            types: .init(folder: "types"),
-            overrides: .init(folder: "overrides")
+        site: .init(
+            baseUrl: "http://localhost:3000"
         ),
         contents: .init(
             folder: "contents",
-            dateFormat: "yyyy-MM-dd HH:mm:ss",
+//            dateFormat: "yyyy-MM-dd HH:mm:ss",
             assets: .init(folder: "assets"),
             home: .init(
                 id: "home",
@@ -309,6 +320,14 @@ extension Config {
             rss: .init(
                 output: "rss.xml"
             )
+        ),
+        themes: .init(
+            use: "default",
+            folder: "themes",
+            assets: .init(folder: "assets"),
+            templates: .init(folder: "templates"),
+            types: .init(folder: "types"),
+            overrides: .init(folder: "overrides")
         ),
         transformers: .init(
             folder: "transformers",

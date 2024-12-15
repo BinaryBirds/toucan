@@ -92,8 +92,9 @@ struct HTMLRenderer {
                     "{{number}}": String(number),
                     "{{total}}": String(total),
                 ])
+#warning("FIXME")
                 let permalink = slug.permalink(
-                    baseUrl: source.sourceConfig.site.baseUrl
+                    baseUrl: "source.sourceConfig.site.baseUrl"
                 )
                 let isCurrent = pageBundle.slug == slug
                 ctx.append(
@@ -156,19 +157,19 @@ struct HTMLRenderer {
         try fileManager.createParentFolderIfNeeded(
             for: fileUrl
         )
-
+#warning("FIXME")
         let context = HTML(
             site: .init(
-                baseUrl: source.sourceConfig.site.baseUrl,
-                title: source.sourceConfig.site.title,
-                description: source.sourceConfig.site.description,
-                language: source.sourceConfig.site.language,
+                baseUrl: "source.sourceConfig.site.baseUrl",
+                title: "source.sourceConfig.site.title",
+                description: "source.sourceConfig.site.description",
+                language: "source.sourceConfig.site.language",
                 context: globalContext
             ),
             page: contextStore.fullContext(for: pageBundle),
             userDefined: pageBundle.config.userDefined
                 .recursivelyMerged(
-                    with: source.sourceConfig.site.userDefined
+                    with: source.sourceConfig.siteBundle.userDefined
                 )
                 .sanitized(),
             pagination: .init(
@@ -284,13 +285,14 @@ struct HTMLRenderer {
                         total: total
                     )
 
+#warning("FIXME")
                     let finalBundle = PageBundle(
                         id: pageBundle.id,
                         url: pageBundle.url,
-                        baseUrl: source.sourceConfig.site.baseUrl,
+                        baseUrl: "source.sourceConfig.site.baseUrl",
                         slug: finalSlug,
                         permalink: finalSlug.permalink(
-                            baseUrl: source.sourceConfig.site.baseUrl
+                            baseUrl: "source.sourceConfig.site.baseUrl"
                         ),
                         title: finalTitle,
                         description: finalDescription,

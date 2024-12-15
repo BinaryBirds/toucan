@@ -96,7 +96,8 @@ public struct PageBundleLoader {
 
             // check for publication date
             let formatter = DateFormatters.baseFormatter
-            formatter.dateFormat = sourceConfig.config.contents.dateFormat
+    #warning("FIXME")
+//            formatter.dateFormat = sourceConfig.config.contents.dateFormat
             var publicationDate = now
             if let pub = config.publication,
                 let date = formatter.date(from: pub)
@@ -160,13 +161,14 @@ public struct PageBundleLoader {
                 metadata: metadata
             )
 
+#warning("FIXME")
             let pageBundle = PageBundle(
                 id: id,
                 url: dirUrl,
-                baseUrl: sourceConfig.site.baseUrl,
+                baseUrl: "sourceConfig.site.baseUrl",
                 slug: slug,
                 permalink: slug.permalink(
-                    baseUrl: sourceConfig.site.baseUrl
+                    baseUrl: "sourceConfig.site.baseUrl"
                 ),
                 title: config.title.nilToEmpty,
                 description: config.description.nilToEmpty,
@@ -195,7 +197,8 @@ extension PageBundleLoader {
         date: Date
     ) -> PageBundle.DateValue {
         let html = DateFormatters.baseFormatter
-        html.dateFormat = sourceConfig.site.dateFormat
+        #warning("FIXME")
+//        html.dateFormat = sourceConfig.site.dateFormat
         let rss = DateFormatters.rss
         let sitemap = DateFormatters.sitemap
 

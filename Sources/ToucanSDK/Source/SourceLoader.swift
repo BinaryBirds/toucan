@@ -27,19 +27,19 @@ struct SourceLoader {
         )
         let config = try configLoader.load()
 
-        let siteLoader = SiteLoader(
+        let siteLoader = SiteBundleLoader(
             sourceUrl: sourceUrl,
             config: config,
             fileLoader: .yaml,
             baseUrl: baseUrl,
             logger: logger
         )
-        let site = try siteLoader.load()
+        let siteBundle = try siteLoader.load()
 
         let sourceConfig = SourceConfig(
             sourceUrl: sourceUrl,
             config: config,
-            site: site
+            siteBundle: siteBundle
         )
 
         logger.trace(

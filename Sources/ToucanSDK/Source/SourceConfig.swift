@@ -11,7 +11,7 @@ struct SourceConfig {
 
     let sourceUrl: URL
     let config: Config
-    let site: Site
+    let siteBundle: SiteBundle
 
     var contentsUrl: URL {
         sourceUrl.appendingPathComponent(config.contents.folder)

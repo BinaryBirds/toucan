@@ -65,7 +65,7 @@ struct ContextStore {
         let markdownRenderer = MarkdownRenderer(
             blockDirectives: blockDirectives,
             delegate: HTMLRendererDelegate(
-                site: sourceConfig.site,
+                config: sourceConfig.config,
                 pageBundle: pageBundle
             ),
             logger: logger

@@ -9,7 +9,7 @@ import Foundation
 import FileManagerKit
 import Logging
 
-public struct SiteLoader {
+public struct SiteBundleLoader {
 
     /// An enumeration representing possible errors that can occur while loading the configuration.
     public enum Error: Swift.Error {
@@ -28,7 +28,7 @@ public struct SiteLoader {
     /// The logger instance
     let logger: Logger
 
-    func load() throws -> Site {
+    func load() throws -> SiteBundle {
         let siteUrl =
             sourceUrl
             .appendingPathComponent(config.contents.folder)
@@ -36,22 +36,11 @@ public struct SiteLoader {
             siteUrl
             .appendingPathComponent("index")
 
-        logger.debug("Loading site file from: `\(siteUrl.absoluteString)`.")
+        logger.debug("Loading site bundle file from: `\(siteUrl.absoluteString)`.")
 
         do {
             let contents = try fileLoader.loadContents(at: siteFileUrl)
-
             let yaml = try contents.decodeYaml()
-            if let baseUrl, !baseUrl.isEmpty {
-                return .init(
-                    yaml
-                        .recursivelyMerged(
-                            with: [
-                                "baseUrl": baseUrl
-                            ]
-                        )
-                )
-            }
             return .init(yaml)
         }
         catch FileLoader.Error.missing(let url) {

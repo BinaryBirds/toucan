@@ -10,7 +10,7 @@ import Foundation
 
 struct HTMLRendererDelegate: MarkdownRenderer.Delegate {
 
-    let site: Site
+    let config: Config
     let pageBundle: PageBundle
 
     func linkAttributes(_ link: String?) -> [String: String] {
@@ -18,9 +18,11 @@ struct HTMLRendererDelegate: MarkdownRenderer.Delegate {
         guard let link, !link.isEmpty else {
             return attributes
         }
-        if !link.hasPrefix("."),
+
+        if
+            !link.hasPrefix("."),
             !link.hasPrefix("/"),
-            !link.hasPrefix(site.baseUrl)
+            !link.hasPrefix(config.site.baseUrl)
         {
             attributes["target"] = "_blank"
         }

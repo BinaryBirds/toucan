@@ -76,7 +76,7 @@ extension Toucan {
                 )
             }
         }
-        catch let error as SiteLoader.Error {
+        catch let error as SiteBundleLoader.Error {
             switch error {
             case .missing(let url):
                 logger.error(
