@@ -161,14 +161,13 @@ public struct PageBundleLoader {
                 metadata: metadata
             )
 
-            #warning("FIXME")
             let pageBundle = PageBundle(
                 id: id,
                 url: dirUrl,
-                baseUrl: "sourceConfig.site.baseUrl",
+                baseUrl: sourceConfig.config.site.baseUrl,
                 slug: slug,
                 permalink: slug.permalink(
-                    baseUrl: "sourceConfig.site.baseUrl"
+                    baseUrl: sourceConfig.config.site.baseUrl
                 ),
                 title: config.title.nilToEmpty,
                 description: config.description.nilToEmpty,

@@ -92,9 +92,8 @@ struct HTMLRenderer {
                     "{{number}}": String(number),
                     "{{total}}": String(total),
                 ])
-                #warning("FIXME")
                 let permalink = slug.permalink(
-                    baseUrl: "source.sourceConfig.site.baseUrl"
+                    baseUrl: source.sourceConfig.config.site.baseUrl
                 )
                 let isCurrent = pageBundle.slug == slug
                 ctx.append(
@@ -285,14 +284,13 @@ struct HTMLRenderer {
                         total: total
                     )
 
-                    #warning("FIXME")
                     let finalBundle = PageBundle(
                         id: pageBundle.id,
                         url: pageBundle.url,
-                        baseUrl: "source.sourceConfig.site.baseUrl",
+                        baseUrl: source.sourceConfig.config.site.baseUrl,
                         slug: finalSlug,
                         permalink: finalSlug.permalink(
-                            baseUrl: "source.sourceConfig.site.baseUrl"
+                            baseUrl: source.sourceConfig.config.site.baseUrl
                         ),
                         title: finalTitle,
                         description: finalDescription,
