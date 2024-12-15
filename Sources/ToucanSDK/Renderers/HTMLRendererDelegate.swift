@@ -19,8 +19,7 @@ struct HTMLRendererDelegate: MarkdownRenderer.Delegate {
             return attributes
         }
 
-        if
-            !link.hasPrefix("."),
+        if !link.hasPrefix("."),
             !link.hasPrefix("/"),
             !link.hasPrefix(config.site.baseUrl)
         {

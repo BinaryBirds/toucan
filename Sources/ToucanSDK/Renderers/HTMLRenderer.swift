@@ -92,7 +92,7 @@ struct HTMLRenderer {
                     "{{number}}": String(number),
                     "{{total}}": String(total),
                 ])
-#warning("FIXME")
+                #warning("FIXME")
                 let permalink = slug.permalink(
                     baseUrl: "source.sourceConfig.site.baseUrl"
                 )
@@ -157,7 +157,7 @@ struct HTMLRenderer {
         try fileManager.createParentFolderIfNeeded(
             for: fileUrl
         )
-#warning("FIXME")
+        #warning("FIXME")
         let context = HTML(
             site: .init(
                 baseUrl: "source.sourceConfig.site.baseUrl",
@@ -285,7 +285,7 @@ struct HTMLRenderer {
                         total: total
                     )
 
-#warning("FIXME")
+                    #warning("FIXME")
                     let finalBundle = PageBundle(
                         id: pageBundle.id,
                         url: pageBundle.url,

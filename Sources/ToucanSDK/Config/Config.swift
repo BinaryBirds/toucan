@@ -96,24 +96,24 @@ struct Config {
     // MARK: -
 
     struct Site {
-        
-        
+
         enum Keys {
             static let baseUrl = "baseUrl"
         }
 
         let baseUrl: String
-        
+
         init(baseUrl: String) {
-            self.baseUrl = baseUrl
+            self.baseUrl = baseUrl.dropTrailingSlash()
         }
 
         init(_ dict: [String: Any]) {
-            self.baseUrl = dict.string(Keys.baseUrl)
-                ?? Config.defaults.site.baseUrl
+            self.baseUrl =
+                (dict.string(Keys.baseUrl) ?? Config.defaults.site.baseUrl)
+                .dropTrailingSlash()
         }
     }
-    
+
     struct Contents {
 
         struct Page {
@@ -307,7 +307,7 @@ extension Config {
         ),
         contents: .init(
             folder: "contents",
-//            dateFormat: "yyyy-MM-dd HH:mm:ss",
+            //            dateFormat: "yyyy-MM-dd HH:mm:ss",
             assets: .init(folder: "assets"),
             home: .init(
                 id: "home",

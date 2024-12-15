@@ -37,7 +37,7 @@ struct RSSRenderer {
             items.first?.publicationDate
             ?? rssDateFormatter.string(from: .init())
 
-#warning("FIXME")
+        #warning("FIXME")
         let context = RSSContext(
             title: "sourceConfig.site.title",
             description: "sourceConfig.site.description",

@@ -8,10 +8,10 @@
 import Foundation
 
 struct SiteBundle {
-    
-//    enum Keys {
-//        static let name = "name"
-//    }
+
+    //    enum Keys {
+    //        static let name = "name"
+    //    }
 
     let userDefined: [String: Any]
 
@@ -28,5 +28,5 @@ struct SiteBundle {
 
 extension SiteBundle {
 
-//    var name: String? { userDefined.string(Keys.name) }
+    //    var name: String? { userDefined.string(Keys.name) }
 }

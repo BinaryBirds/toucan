@@ -36,7 +36,9 @@ public struct SiteBundleLoader {
             siteUrl
             .appendingPathComponent("index")
 
-        logger.debug("Loading site bundle file from: `\(siteUrl.absoluteString)`.")
+        logger.debug(
+            "Loading site bundle file from: `\(siteUrl.absoluteString)`."
+        )
 
         do {
             let contents = try fileLoader.loadContents(at: siteFileUrl)
