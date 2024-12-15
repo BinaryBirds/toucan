@@ -32,21 +32,26 @@ struct Context {
 
 struct HTML {
 
-    let site: Context.Site
+    let baseUrl: String
+    let siteBundle: [String: Any]
+    let siteContext: [String: Any]
     let page: [String: Any]
     let userDefined: [String: Any]
     let pagination: Context.Pagination
     let year: Int
 
     var context: [String: Any] {
-        userDefined.recursivelyMerged(
-            with: [
-                "site": site,
+        userDefined
+            .recursivelyMerged(with: siteBundle)
+            .recursivelyMerged(with: [
+                "baseUrl": baseUrl,
+                "site": [
+                    "context": siteContext
+                ],
                 "page": page,
                 "pagination": pagination,
                 "year": year,
-            ]
-        )
-        .sanitized()
+            ])
+            .sanitized()
     }
 }

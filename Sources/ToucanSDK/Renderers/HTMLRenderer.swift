@@ -156,21 +156,13 @@ struct HTMLRenderer {
         try fileManager.createParentFolderIfNeeded(
             for: fileUrl
         )
-        #warning("FIXME")
+
         let context = HTML(
-            site: .init(
-                baseUrl: "source.sourceConfig.site.baseUrl",
-                title: "source.sourceConfig.site.title",
-                description: "source.sourceConfig.site.description",
-                language: "source.sourceConfig.site.language",
-                context: globalContext
-            ),
+            baseUrl: source.sourceConfig.config.site.baseUrl,
+            siteBundle: source.sourceConfig.siteBundle.userDefined,
+            siteContext: globalContext,
             page: contextStore.fullContext(for: pageBundle),
-            userDefined: pageBundle.config.userDefined
-                .recursivelyMerged(
-                    with: source.sourceConfig.siteBundle.userDefined
-                )
-                .sanitized(),
+            userDefined: pageBundle.config.userDefined,
             pagination: .init(
                 links: paginationContext,
                 data: paginationData.mapValues {
