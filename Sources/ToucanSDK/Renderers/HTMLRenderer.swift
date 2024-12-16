@@ -166,7 +166,9 @@ struct HTMLRenderer {
             pagination: .init(
                 links: paginationContext,
                 data: paginationData.mapValues {
-                    $0.map { contextStore.fullContext(for: $0) }
+                    $0.map {
+                        contextStore.fullContext(for: $0)
+                    }
                 }
             ),
             year: currentYear
@@ -202,7 +204,9 @@ struct HTMLRenderer {
         let globalContext = contextStore.getPageBundlesForSiteContext()
 
         let siteContext = globalContext.mapValues {
-            $0.map { contextStore.fullContext(for: $0) }
+            $0.map {
+                contextStore.fullContext(for: $0)
+            }
         }
 
         for pageBundle in source.pageBundles {

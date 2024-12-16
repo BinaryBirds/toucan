@@ -18,9 +18,9 @@ struct APIRenderer {
 
     let source: Source
     let destinationUrl: URL
-    let logger: Logger
     let fileManager: FileManager = .default
     let contextStore: ContextStore
+    let logger: Logger
 
     init(
         source: Source,
@@ -80,7 +80,9 @@ struct APIRenderer {
             let bundles = source.pageBundles
                 .filter { $0.contentType.id == contentType.id }
                 //                .map { $0.baseContext }
-                .map { contextStore.fullContext(for: $0) }
+                .map {
+                    contextStore.fullContext(for: $0)
+                }
                 .map { $0.mapValues { JSON(value: $0) } }
 
             let data = try encoder.encode(bundles)

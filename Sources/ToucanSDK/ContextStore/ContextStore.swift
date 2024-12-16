@@ -51,9 +51,11 @@ struct ContextStore {
         for pageBundle: PageBundle
     ) -> [String: Any] {
         var properties: [String: Any] = [:]
-        for (key, _) in pageBundle.contentType.properties ?? [:] {
-            let value = pageBundle.frontMatter[key]
-            properties[key] = value
+        for (key, value) in pageBundle.contentType.properties ?? [:] {
+            let frontMatterValue =
+                pageBundle.frontMatter[key] ?? value.defaultValue?.value()
+                as Any
+            properties[key] = frontMatterValue
         }
         return properties
     }
@@ -146,7 +148,11 @@ struct ContextStore {
         let _contentContext = ensureContentContext(for: pageBundle)
         let _properties = properties(for: pageBundle)
         let _relations = relations(for: pageBundle)
-            .mapValues { $0.map { standardContext(for: $0) } }
+            .mapValues {
+                $0.map {
+                    standardContext(for: $0)
+                }
+            }
 
         let context =
             _baseContext
@@ -254,10 +260,7 @@ struct ContextStore {
         return localContext
     }
 
-    func fullContext(
-        for pageBundle: PageBundle
-    ) -> [String: Any] {
-
+    func fullContext(for pageBundle: PageBundle) -> [String: Any] {
         let metadata: Logger.Metadata = [
             "type": "\(pageBundle.contentType.id)",
             "slug": "\(pageBundle.slug)",
@@ -267,7 +270,11 @@ struct ContextStore {
 
         let _standardContext = standardContext(for: pageBundle)
         let _localContext = localContext(for: pageBundle)
-            .mapValues { $0.map { standardContext(for: $0) } }
+            .mapValues {
+                $0.map {
+                    standardContext(for: $0)
+                }
+            }
 
         let context =
             _standardContext

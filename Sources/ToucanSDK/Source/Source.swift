@@ -66,18 +66,14 @@ struct Source {
         dateFormatter: DateFormatter
     ) {
         let metadata: Logger.Metadata = [
-            "slug": "\(slug)"
+            "contentType": "\(contentType.id)",
+            "slug": "\(slug)",
         ]
 
         // properties
         for property in contentType.properties ?? [:] {
             let hasValue = frontMatter[property.key] != nil
-            let defaultValue: Any? = property.value.defaultValue?
-                .value(
-                    for: property.value.type,
-                    dateFormatter: dateFormatter
-                )
-            let hasDefaultValue = defaultValue != nil
+            let hasDefaultValue = property.value.defaultValue != nil
 
             if !hasValue && !hasDefaultValue {
                 logger.warning(
