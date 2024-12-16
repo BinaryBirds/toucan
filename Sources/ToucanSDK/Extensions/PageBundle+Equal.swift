@@ -36,6 +36,8 @@ extension String {
 
 extension PageBundle {
 
+    // TODO: should incloude defaultValue somehow?
+
     /// Checks if a filter is satisfied based on the current page's front matter.
     ///
     /// - Parameters:

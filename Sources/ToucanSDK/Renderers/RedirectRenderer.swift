@@ -27,9 +27,7 @@ struct RedirectRenderer {
                     .appendingPathComponent(redirect.from)
                     .appendingPathComponent(Files.index)
 
-                try fileManager.createParentFolderIfNeeded(
-                    for: fileUrl
-                )
+                try fileManager.createParentFolderIfNeeded(for: fileUrl)
 
                 try templateRenderer.render(
                     template: "redirect",
