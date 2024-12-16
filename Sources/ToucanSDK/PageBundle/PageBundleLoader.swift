@@ -18,8 +18,8 @@ public struct PageBundleLoader {
         case pageBundle(Swift.Error)
     }
 
-    let sourceConfig: SourceConfig
-    let contentTypes: [ContentType]
+    let source: Source
+    let contentTypes: [NewContentType]
 
     /// The file manager used for file operations.
     let fileManager: FileManager
@@ -43,7 +43,7 @@ public struct PageBundleLoader {
     func load() throws -> [PageBundle] {
         try PageBundleLocator(
             fileManager: fileManager,
-            contentsUrl: sourceConfig.contentsUrl
+            contentsUrl: source.contentsUrl
         )
         .locate()
         .compactMap { try loadPageBundle(at: $0) }
@@ -55,7 +55,7 @@ public struct PageBundleLoader {
     func loadPageBundle(
         at location: PageBundleLocation
     ) throws -> PageBundle? {
-        let dirUrl = sourceConfig.contentsUrl.appendingPathComponent(
+        let dirUrl = source.contentsUrl.appendingPathComponent(
             location.path
         )
 
@@ -97,7 +97,7 @@ public struct PageBundleLoader {
             // check for publication date
             let formatter = DateFormatters.baseFormatter
             #warning("FIXME")
-            //            formatter.dateFormat = sourceConfig.config.contents.dateFormat
+            //            formatter.dateFormat = source.config.contents.dateFormat
             var publicationDate = now
             if let pub = config.publication,
                 let date = formatter.date(from: pub)
@@ -140,7 +140,7 @@ public struct PageBundleLoader {
 
             // create safe slug, set empty slug for home page if needed
             var slug = (config.slug ?? location.slug).safeSlug(prefix: nil)
-            if id == sourceConfig.config.contents.home.id {
+            if id == source.config.contents.home.id {
                 slug = ""
             }
 
@@ -149,12 +149,12 @@ public struct PageBundleLoader {
             let assets = fileManager.recursivelyListDirectory(at: assetsUrl)
                 .filter { !$0.hasPrefix(".") }
 
-            let properties = config.userDefined.filter {
-                contentType.propertyKeys.contains($0.key)
-            }
-            let relations = config.userDefined.filter {
-                contentType.relationKeys.contains($0.key)
-            }
+//            let properties = config.userDefined.filter {
+//                contentType.propertyKeys.contains($0.key)
+//            }
+//            let relations = config.userDefined.filter {
+//                contentType.relationKeys.contains($0.key)
+//            }
 
             logger.debug(
                 "Page bundle is loaded.",
@@ -164,21 +164,21 @@ public struct PageBundleLoader {
             let pageBundle = PageBundle(
                 id: id,
                 url: dirUrl,
-                baseUrl: sourceConfig.config.site.baseUrl,
+                baseUrl: source.config.site.baseUrl,
                 slug: slug,
                 permalink: slug.permalink(
-                    baseUrl: sourceConfig.config.site.baseUrl
+                    baseUrl: source.config.site.baseUrl
                 ),
                 title: config.title.nilToEmpty,
                 description: config.description.nilToEmpty,
-                date: convert(date: publicationDate),
+//                date: convert(date: publicationDate),
                 contentType: contentType,
                 publication: publicationDate,
                 lastModification: lastModification,
                 config: config,
                 frontMatter: frontMatter,
-                properties: properties,
-                relations: relations,
+                properties: [:],
+                relations: [:],
                 markdown: markdown,
                 assets: assets
             )
@@ -192,26 +192,26 @@ public struct PageBundleLoader {
 
 extension PageBundleLoader {
 
-    func convert(
-        date: Date
-    ) -> PageBundle.DateValue {
-        let html = DateFormatters.baseFormatter
-        #warning("FIXME")
-        //        html.dateFormat = sourceConfig.site.dateFormat
-        let rss = DateFormatters.rss
-        let sitemap = DateFormatters.sitemap
-
-        return .init(
-            html: html.string(from: date),
-            rss: rss.string(from: date),
-            sitemap: sitemap.string(from: date)
-        )
-    }
+//    func convert(
+//        date: Date
+//    ) -> PageBundle.DateValue {
+//        let html = DateFormatters.baseFormatter
+//        #warning("FIXME")
+//        //        html.dateFormat = source.site.dateFormat
+//        let rss = DateFormatters.rss
+//        let sitemap = DateFormatters.sitemap
+//
+//        return .init(
+//            html: html.string(from: date),
+//            rss: rss.string(from: date),
+//            sitemap: sitemap.string(from: date)
+//        )
+//    }
 
     func getContentType(
         for location: PageBundleLocation,
         explicitType: String?
-    ) -> ContentType? {
+    ) -> NewContentType? {
         var assumedType: String?
         for contentType in contentTypes {
             guard
@@ -227,7 +227,7 @@ extension PageBundleLoader {
         if let explicitType {
             assumedType = explicitType
         }
-        let type = assumedType ?? ContentType.default.id
+        let type = assumedType ?? "ContentType.default.id"
         return contentTypes.first { $0.id == type }
     }
 

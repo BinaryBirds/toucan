@@ -16,14 +16,14 @@ struct APIRenderer {
         static let notFound = "404.html"
     }
 
-    let source: Source
+    let source: SourceBundle
     let destinationUrl: URL
     let fileManager: FileManager = .default
     let contextStore: ContextStore
     let logger: Logger
 
     init(
-        source: Source,
+        source: SourceBundle,
         destinationUrl: URL,
         logger: Logger
     ) throws {
@@ -32,7 +32,7 @@ struct APIRenderer {
         self.logger = logger
 
         self.contextStore = .init(
-            sourceConfig: source.sourceConfig,
+            source: source.source,
             contentTypes: source.contentTypes,
             pageBundles: source.pageBundles,
             blockDirectives: source.blockDirectives,
@@ -44,8 +44,8 @@ struct APIRenderer {
 
     func render() throws {
         let hasAPIOutput = !source.contentTypes
-            .compactMap { $0.api }
-            .filter { !$0.isEmpty }
+//            .compactMap { $0.api }
+//            .filter { !$0.isEmpty }
             .isEmpty
 
         guard hasAPIOutput else {
@@ -68,26 +68,26 @@ struct APIRenderer {
             .sortedKeys,
             .withoutEscapingSlashes,
         ]
-        for contentType in source.contentTypes {
-            guard let api = contentType.api, !api.isEmpty else {
-                continue
-            }
-            let url =
-                apiUrl
-                .appendingPathComponent(api)
-                .appendingPathExtension("json")
-
-            let bundles = source.pageBundles
-                .filter { $0.contentType.id == contentType.id }
-                //                .map { $0.baseContext }
-                .map {
-                    contextStore.fullContext(for: $0)
-                }
-                .map { $0.mapValues { JSON(value: $0) } }
-
-            let data = try encoder.encode(bundles)
-            //            print(String(data: data, encoding: .utf8)!)
-            try data.write(to: url)
-        }
+//        for contentType in source.contentTypes {
+//            guard let api = contentType.api, !api.isEmpty else {
+//                continue
+//            }
+//            let url =
+//                apiUrl
+//                .appendingPathComponent(api)
+//                .appendingPathExtension("json")
+//
+//            let bundles = source.pageBundles
+//                .filter { $0.contentType.id == contentType.id }
+//                //                .map { $0.baseContext }
+//                .map {
+//                    contextStore.fullContext(for: $0)
+//                }
+//                .map { $0.mapValues { JSON(value: $0) } }
+//
+//            let data = try encoder.encode(bundles)
+//            //            print(String(data: data, encoding: .utf8)!)
+//            try data.write(to: url)
+//        }
     }
 }

@@ -10,8 +10,8 @@ import Logging
 
 struct ContextStore {
 
-    let sourceConfig: SourceConfig
-    let contentTypes: [ContentType]
+    let source: Source
+    let contentTypes: [NewContentType]
     let blockDirectives: [Block]
     let pageBundles: [PageBundle]
 
@@ -24,13 +24,13 @@ struct ContextStore {
     private var contentContextCache: ContentContextCache
 
     init(
-        sourceConfig: SourceConfig,
-        contentTypes: [ContentType],
+        source: Source,
+        contentTypes: [NewContentType],
         pageBundles: [PageBundle],
         blockDirectives: [Block],
         logger: Logger
     ) {
-        self.sourceConfig = sourceConfig
+        self.source = source
         self.contentTypes = contentTypes
         self.pageBundles = pageBundles
         self.contentContextCache = .init()
@@ -53,8 +53,7 @@ struct ContextStore {
         var properties: [String: Any] = [:]
         for (key, value) in pageBundle.contentType.properties ?? [:] {
             let frontMatterValue =
-                pageBundle.frontMatter[key] ?? value.defaultValue?.value()
-                as Any
+                pageBundle.frontMatter[key] //?? value.defaultValue?.value() as Any
             properties[key] = frontMatterValue
         }
         return properties
@@ -67,13 +66,13 @@ struct ContextStore {
         let markdownRenderer = MarkdownRenderer(
             blockDirectives: blockDirectives,
             delegate: HTMLRendererDelegate(
-                config: sourceConfig.config,
+                config: source.config,
                 pageBundle: pageBundle
             ),
             logger: logger
         )
 
-        let pipelines = sourceConfig.config.transformers.pipelines
+        let pipelines = source.config.transformers.pipelines
         let pipeline = pipelines[pageBundle.contentType.id]
         var shouldRenderMarkdown = true
 
@@ -83,7 +82,7 @@ struct ContextStore {
                 let executor = PipelineExecutor(
                     pipeline: pipeline,
                     pageBundle: pageBundle,
-                    sourceConfig: sourceConfig,
+                    source: source,
                     fileManager: fileManager,
                     logger: logger
                 )
@@ -118,23 +117,23 @@ struct ContextStore {
         for pageBundle: PageBundle
     ) -> [String: [PageBundle]] {
         var result: [String: [PageBundle]] = [:]
-        for (key, value) in pageBundle.contentType.relations ?? [:] {
-            let refIds = pageBundle.referenceIdentifiers(
-                for: key,
-                join: value.join
-            )
-
-            let refs =
-                pageBundles
-                .filter { $0.contentType.id == value.references }
-                .filter { item in
-                    refIds.contains(item.contextAwareIdentifier)
-                }
-                .sorted(frontMatterKey: value.sort, order: value.order)
-                .limited(value.limit)
-
-            result[key] = refs
-        }
+//        for (key, value) in pageBundle.contentType.relations ?? [:] {
+//            let refIds = pageBundle.referenceIdentifiers(
+//                for: key,
+//                join: value.join
+//            )
+//
+//            let refs =
+//                pageBundles
+//                .filter { $0.contentType.id == value.references }
+//                .filter { item in
+//                    refIds.contains(item.contextAwareIdentifier)
+//                }
+//                .sorted(frontMatterKey: value.sort, order: value.order)
+//                .limited(value.limit)
+//
+//            result[key] = refs
+//        }
         return result
     }
 
@@ -191,72 +190,72 @@ struct ContextStore {
         var localContext: [String: [PageBundle]] = [:]
         let contentType = pageBundle.contentType
 
-        for (key, value) in contentType.context?.local ?? [:] {
-            if value.foreignKey.hasPrefix("$") {
-                var command = String(value.foreignKey.dropFirst())
-                var arguments: [String] = []
-                if command.contains(".") {
-                    let all = command.split(separator: ".")
-                    command = String(all[0])
-                    arguments = all.dropFirst().map(String.init)
-                }
-
-                let refs =
-                    pageBundles
-                    .filter { $0.contentType.id == value.references }
-                    .sorted(frontMatterKey: value.sort, order: value.order)
-
-                guard
-                    let idx = refs.firstIndex(where: {
-                        $0.slug == pageBundle.slug
-                    })
-                else {
-                    continue
-                }
-
-                switch command {
-                case "prev":
-                    guard idx > 0 else {
-                        continue
-                    }
-                    localContext[key] = [refs[idx - 1]]
-                case "next":
-                    guard idx < refs.count - 1 else {
-                        continue
-                    }
-                    localContext[key] = [refs[idx + 1]]
-                case "same":
-                    guard let arg = arguments.first else {
-                        continue
-                    }
-                    let ids = Set(pageBundle.referenceIdentifiers(for: arg))
-                    localContext[key] =
-                        refs.filter { pb in
-                            if pb.slug == pageBundle.slug {
-                                return false
-                            }
-                            let pbIds = Set(pb.referenceIdentifiers(for: arg))
-                            return !ids.intersection(pbIds).isEmpty
-                        }
-                        .limited(value.limit)
-                default:
-                    continue
-                }
-            }
-            else {
-                localContext[key] =
-                    pageBundles
-                    .filter { $0.contentType.id == value.references }
-                    .filter {
-                        $0.referenceIdentifiers(
-                            for: value.foreignKey
-                        )
-                        .contains(id)
-                    }
-                    .sorted(frontMatterKey: value.sort, order: value.order)
-                    .limited(value.limit)
-            }
-        }
+//        for (key, value) in contentType.context?.local ?? [:] {
+//            if value.foreignKey.hasPrefix("$") {
+//                var command = String(value.foreignKey.dropFirst())
+//                var arguments: [String] = []
+//                if command.contains(".") {
+//                    let all = command.split(separator: ".")
+//                    command = String(all[0])
+//                    arguments = all.dropFirst().map(String.init)
+//                }
+//
+//                let refs =
+//                    pageBundles
+//                    .filter { $0.contentType.id == value.references }
+//                    .sorted(frontMatterKey: value.sort, order: value.order)
+//
+//                guard
+//                    let idx = refs.firstIndex(where: {
+//                        $0.slug == pageBundle.slug
+//                    })
+//                else {
+//                    continue
+//                }
+//
+//                switch command {
+//                case "prev":
+//                    guard idx > 0 else {
+//                        continue
+//                    }
+//                    localContext[key] = [refs[idx - 1]]
+//                case "next":
+//                    guard idx < refs.count - 1 else {
+//                        continue
+//                    }
+//                    localContext[key] = [refs[idx + 1]]
+//                case "same":
+//                    guard let arg = arguments.first else {
+//                        continue
+//                    }
+//                    let ids = Set(pageBundle.referenceIdentifiers(for: arg))
+//                    localContext[key] =
+//                        refs.filter { pb in
+//                            if pb.slug == pageBundle.slug {
+//                                return false
+//                            }
+//                            let pbIds = Set(pb.referenceIdentifiers(for: arg))
+//                            return !ids.intersection(pbIds).isEmpty
+//                        }
+//                        .limited(value.limit)
+//                default:
+//                    continue
+//                }
+//            }
+//            else {
+//                localContext[key] =
+//                    pageBundles
+//                    .filter { $0.contentType.id == value.references }
+//                    .filter {
+//                        $0.referenceIdentifiers(
+//                            for: value.foreignKey
+//                        )
+//                        .contains(id)
+//                    }
+//                    .sorted(frontMatterKey: value.sort, order: value.order)
+//                    .limited(value.limit)
+//            }
+//        }
         return localContext
     }
 
@@ -289,16 +288,16 @@ struct ContextStore {
         var result: [String: [PageBundle]] = [:]
         let dateFormatter = DateFormatters.baseFormatter
 
-        for contentType in contentTypes {
-            for (key, value) in contentType.context?.site ?? [:] {
-                result[key] =
-                    pageBundles
-                    .filter { $0.contentType.id == contentType.id }
-                    .sorted(frontMatterKey: value.sort, order: value.order)
-                    .filtered(value.filter, dateFormatter: dateFormatter)
-                    .limited(value.limit)
-            }
-        }
+//        for contentType in contentTypes {
+//            for (key, value) in contentType.context?.site ?? [:] {
+//                result[key] =
+//                    pageBundles
+//                    .filter { $0.contentType.id == contentType.id }
+//                    .sorted(frontMatterKey: value.sort, order: value.order)
+//                    .filtered(value.filter, dateFormatter: dateFormatter)
+//                    .limited(value.limit)
+//            }
+//        }
 
         return result
     }

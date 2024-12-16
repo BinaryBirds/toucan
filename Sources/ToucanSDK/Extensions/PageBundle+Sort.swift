@@ -16,25 +16,25 @@ extension PageBundle {
     ///   - frontMatterKey: The key in the front matter to use for comparison.
     ///   - order: The order (`asc` or `desc`) in which to perform the comparison.
     /// - Returns: A Boolean value indicating whether the current `PageBundle` instance should be ordered before (`true`) or after (`false`) the rhs instance.
-    func compareForSorting(
-        for rhs: PageBundle,
-        frontMatterKey: String,
-        order: ContentType.Order
-    ) -> Bool {
-        guard
-            let lhsField = frontMatter[frontMatterKey],
-            let rhsField = rhs.frontMatter[frontMatterKey]
-        else {
-            return false
-        }
-
-        switch order {
-        case .asc:
-            return compareValuesAscending(lhsField, rhsField)
-        case .desc:
-            return !compareValuesAscending(lhsField, rhsField)
-        }
-    }
+//    func compareForSorting(
+//        for rhs: PageBundle,
+//        frontMatterKey: String,
+//        order: ContentType.Order
+//    ) -> Bool {
+//        guard
+//            let lhsField = frontMatter[frontMatterKey],
+//            let rhsField = rhs.frontMatter[frontMatterKey]
+//        else {
+//            return false
+//        }
+//
+//        switch order {
+//        case .asc:
+//            return compareValuesAscending(lhsField, rhsField)
+//        case .desc:
+//            return !compareValuesAscending(lhsField, rhsField)
+//        }
+//    }
 }
 
 /// Compares two values of any type in ascending order.

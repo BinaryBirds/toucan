@@ -9,7 +9,7 @@ import Foundation
 
 struct RSSRenderer {
 
-    let sourceConfig: SourceConfig
+    let source: Source
     let destinationUrl: URL
     let fileManager: FileManager
     let templateRenderer: MustacheToHTMLRenderer
@@ -27,7 +27,7 @@ struct RSSRenderer {
                     permalink: item.permalink,
                     title: item.title,
                     description: item.description,
-                    publicationDate: item.date.rss
+                    publicationDate: "item.date.rss"
                 )
             }
 
@@ -39,10 +39,10 @@ struct RSSRenderer {
 
         #warning("FIXME")
         let context = RSSContext(
-            title: "sourceConfig.site.title",
-            description: "sourceConfig.site.description",
-            baseUrl: "sourceConfig.site.baseUrl",
-            language: "sourceConfig.site.language",
+            title: "source.site.title",
+            description: "source.site.description",
+            baseUrl: "source.site.baseUrl",
+            language: "source.site.language",
             lastBuildDate: rssDateFormatter.string(from: .init()),
             publicationDate: publicationDate,
             items: items
@@ -52,7 +52,7 @@ struct RSSRenderer {
             with: context,
             to:
                 destinationUrl
-                .appendingPathComponent(sourceConfig.config.contents.rss.output)
+                .appendingPathComponent(source.config.contents.rss.output)
         )
     }
 }

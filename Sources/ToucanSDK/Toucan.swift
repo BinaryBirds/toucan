@@ -76,7 +76,7 @@ public struct Toucan {
         logger.debug("Working at: `\(workDirUrl.absoluteString)`.")
 
         do {
-            let loader = SourceLoader(
+            let loader = SourceBundleLoader(
                 baseUrl: baseUrl,
                 sourceUrl: inputUrl,
                 yamlFileLoader: .yaml,
@@ -89,17 +89,17 @@ public struct Toucan {
 
             // theme assets
             try fileManager.copyRecursively(
-                from: source.sourceConfig.currentThemeAssetsUrl,
+                from: source.source.currentThemeAssetsUrl,
                 to: workDirUrl
             )
             // theme override assets
             try fileManager.copyRecursively(
-                from: source.sourceConfig.currentThemeOverrideAssetsUrl,
+                from: source.source.currentThemeOverrideAssetsUrl,
                 to: workDirUrl
             )
             // copy global site assets
             try fileManager.copyRecursively(
-                from: source.sourceConfig.assetsUrl,
+                from: source.source.assetsUrl,
                 to: workDirUrl
             )
 
@@ -128,9 +128,9 @@ public struct Toucan {
             }
 
             let templateRenderer = try MustacheToHTMLRenderer(
-                templatesUrl: source.sourceConfig.currentThemeTemplatesUrl,
+                templatesUrl: source.source.currentThemeTemplatesUrl,
                 overridesUrl: source
-                    .sourceConfig
+                    .source
                     .currentThemeOverrideTemplatesUrl,
                 logger: logger
             )
@@ -152,7 +152,7 @@ public struct Toucan {
             try sitemapRenderer.render()
 
             let rssRenderer = RSSRenderer(
-                sourceConfig: source.sourceConfig,
+                source: source.source,
                 destinationUrl: workDirUrl,
                 fileManager: .default,
                 templateRenderer: templateRenderer,
@@ -161,7 +161,7 @@ public struct Toucan {
             try rssRenderer.render()
 
             let htmlRenderer = try HTMLRenderer(
-                source: source,
+                sourceBundle: source,
                 destinationUrl: workDirUrl,
                 templateRenderer: templateRenderer,
                 seoChecks: seoChecks,

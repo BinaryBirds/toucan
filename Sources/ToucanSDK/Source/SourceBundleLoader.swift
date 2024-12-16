@@ -8,7 +8,7 @@
 import Foundation
 import Logging
 
-struct SourceLoader {
+struct SourceBundleLoader {
 
     let baseUrl: String?
     let sourceUrl: URL
@@ -18,7 +18,7 @@ struct SourceLoader {
     let logger: Logger
 
     /// load the configuration & the contents of the site source
-    func load() throws -> Source {
+    func load() throws -> SourceBundle {
 
         let configLoader = ConfigLoader(
             sourceUrl: sourceUrl,
@@ -27,52 +27,50 @@ struct SourceLoader {
         )
         let config = try configLoader.load()
 
-        let siteLoader = SiteBundleLoader(
-            sourceUrl: sourceUrl,
-            config: config,
+        let source = Source(
+            url: sourceUrl,
+            config: config
+        )
+        
+        let siteBundleLoader = SiteBundleLoader(
+            source: source,
             fileLoader: .yaml,
             baseUrl: baseUrl,
             logger: logger
         )
-        let siteBundle = try siteLoader.load()
-
-        let sourceConfig = SourceConfig(
-            sourceUrl: sourceUrl,
-            config: config,
-            siteBundle: siteBundle
-        )
+        let siteBundle = try siteBundleLoader.load()
 
         logger.trace(
-            "Themes location url: `\(sourceConfig.themesUrl.absoluteString)`"
+            "Themes location url: `\(source.themesUrl.absoluteString)`"
         )
         logger.trace(
-            "Current theme url: `\(sourceConfig.currentThemeUrl.absoluteString)`"
+            "Current theme url: `\(source.currentThemeUrl.absoluteString)`"
         )
         logger.trace(
-            "Current theme assets url: `\(sourceConfig.currentThemeAssetsUrl.absoluteString)`"
+            "Current theme assets url: `\(source.currentThemeAssetsUrl.absoluteString)`"
         )
         logger.trace(
-            "Current theme templates url: `\(sourceConfig.currentThemeTemplatesUrl.absoluteString)`"
+            "Current theme templates url: `\(source.currentThemeTemplatesUrl.absoluteString)`"
         )
         logger.trace(
-            "Current theme types url: `\(sourceConfig.currentThemeTypesUrl.absoluteString)`"
+            "Current theme types url: `\(source.currentThemeTypesUrl.absoluteString)`"
         )
 
         logger.trace(
-            "Theme override url: `\(sourceConfig.currentThemeOverrideUrl.absoluteString)`"
+            "Theme override url: `\(source.currentThemeOverrideUrl.absoluteString)`"
         )
         logger.trace(
-            "Theme override assets url: `\(sourceConfig.currentThemeOverrideAssetsUrl.absoluteString)`"
+            "Theme override assets url: `\(source.currentThemeOverrideAssetsUrl.absoluteString)`"
         )
         logger.trace(
-            "Theme override templates url: `\(sourceConfig.currentThemeOverrideTemplatesUrl.absoluteString)`"
+            "Theme override templates url: `\(source.currentThemeOverrideTemplatesUrl.absoluteString)`"
         )
         logger.trace(
-            "Theme override types url: `\(sourceConfig.currentThemeOverrideTypesUrl.absoluteString)`"
+            "Theme override types url: `\(source.currentThemeOverrideTypesUrl.absoluteString)`"
         )
 
         let contentTypeLoader = ContentTypeLoader(
-            sourceConfig: sourceConfig,
+            source: source,
             fileLoader: .yaml,
             yamlParser: .init(),
             logger: logger
@@ -81,7 +79,7 @@ struct SourceLoader {
         let contentTypes = try contentTypeLoader.load()
 
         let blockDirectiveLoader = BlockDirectiveLoader(
-            sourceConfig: sourceConfig,
+            source: source,
             fileLoader: .yaml,
             yamlParser: .init(),
             logger: logger
@@ -90,7 +88,7 @@ struct SourceLoader {
         let blockDirectives = try blockDirectiveLoader.load()
 
         let pageBundleLoader = PageBundleLoader(
-            sourceConfig: sourceConfig,
+            source: source,
             contentTypes: contentTypes,
             fileManager: fileManager,
             frontMatterParser: frontMatterParser,
@@ -99,7 +97,8 @@ struct SourceLoader {
         let pageBundles = try pageBundleLoader.load()
 
         return .init(
-            sourceConfig: sourceConfig,
+            source: source,
+            siteBundle: siteBundle,
             contentTypes: contentTypes,
             blockDirectives: blockDirectives,
             pageBundles: pageBundles,
@@ -107,3 +106,4 @@ struct SourceLoader {
         )
     }
 }
+

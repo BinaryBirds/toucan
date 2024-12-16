@@ -17,7 +17,7 @@ import Logging
 struct PipelineExecutor {
     let pipeline: Config.Transformers.Pipeline
     let pageBundle: PageBundle
-    let sourceConfig: SourceConfig
+    let source: Source
     let fileManager: FileManager
     let logger: Logger
 
@@ -34,7 +34,7 @@ struct PipelineExecutor {
         let shell = Shell(env: ProcessInfo.processInfo.environment)
 
         for run in pipeline.run {
-            let runUrl = sourceConfig.transformersUrl
+            let runUrl = source.transformersUrl
                 .appendingPathComponent(run.name)
             guard fileManager.fileExists(at: runUrl) else {
                 continue

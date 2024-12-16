@@ -15,7 +15,7 @@ final class ContextStoreTests: XCTestCase {
         let logger = Logger(label: "test-logger")
 
         _ = ContextStore(
-            sourceConfig: .init(
+            source: .init(
                 sourceUrl: URL(fileURLWithPath: "/"),
                 config: .defaults,
                 site: .defaults

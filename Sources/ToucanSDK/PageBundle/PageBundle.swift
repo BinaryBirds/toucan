@@ -10,12 +10,6 @@ import Foundation
 /// A page bundle representing a subpage for a website.
 struct PageBundle {
 
-    struct DateValue: Codable {
-        let html: String
-        let rss: String
-        let sitemap: String
-    }
-
     let id: String
     let url: URL
     let baseUrl: String
@@ -25,9 +19,8 @@ struct PageBundle {
 
     let title: String
     let description: String
-    let date: DateValue
 
-    let contentType: ContentType
+    let contentType: NewContentType
     let publication: Date
     let lastModification: Date
     let config: Config
@@ -93,7 +86,7 @@ struct PageBundle {
         if assets.contains("style.css") {
             css.append(resolveAsset(path: assetsPrefix + "style.css"))
         }
-        css += contentType.css ?? []
+//        css += contentType.css ?? []
         css = Array(Set(css))
 
         // resolve js context
@@ -101,7 +94,7 @@ struct PageBundle {
         if assets.contains("main.js") {
             js.append(resolveAsset(path: assetsPrefix + "main.js"))
         }
-        js += contentType.js ?? []
+//        js += contentType.js ?? []
         js = Array(Set(js))
 
         return config.userDefined
@@ -113,7 +106,7 @@ struct PageBundle {
                     "title": title,
                     "description": description,
                     "imageUrl": imageUrl ?? false,
-                    "publication": date,
+//                    "publication": date,
                     "css": css,
                     "js": js,
                 ]

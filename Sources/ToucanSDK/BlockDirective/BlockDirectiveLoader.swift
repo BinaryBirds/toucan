@@ -10,7 +10,7 @@ import Logging
 
 struct BlockDirectiveLoader {
 
-    let sourceConfig: SourceConfig
+    let source: Source
 
     let fileLoader: FileLoader
     let yamlParser: YamlParser
@@ -20,9 +20,9 @@ struct BlockDirectiveLoader {
 
     func load() throws -> [Block] {
 
-        let blocksUrl = sourceConfig.currentThemeUrl
+        let blocksUrl = source.currentThemeUrl
             .appendingPathComponent("blocks")
-        let overrideBlocksUrl = sourceConfig.currentThemeOverrideUrl
+        let overrideBlocksUrl = source.currentThemeOverrideUrl
             .appendingPathComponent("blocks")
 
         let contents = try fileLoader.findContents(at: blocksUrl)

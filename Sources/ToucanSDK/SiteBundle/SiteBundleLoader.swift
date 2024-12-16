@@ -18,9 +18,7 @@ public struct SiteBundleLoader {
     }
 
     /// The URL of the source files.
-    let sourceUrl: URL
-    /// The configuration.
-    let config: Config
+    let source: Source
     /// A file loader used for loading files.
     let fileLoader: FileLoader
     /// The base URL to use for the configuration.
@@ -29,12 +27,8 @@ public struct SiteBundleLoader {
     let logger: Logger
 
     func load() throws -> SiteBundle {
-        let siteUrl =
-            sourceUrl
-            .appendingPathComponent(config.contents.folder)
-        let siteFileUrl =
-            siteUrl
-            .appendingPathComponent("index")
+        let siteUrl = source.contentsUrl
+        let siteFileUrl = siteUrl.appendingPathComponent("index")
 
         logger.debug(
             "Loading site bundle file from: `\(siteUrl.absoluteString)`."

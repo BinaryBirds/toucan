@@ -33,7 +33,7 @@ extension PageBundle {
 
     func referenceIdentifiers(
         for key: String,
-        join: ContentType.Join
+        join: NewHtml.Join
     ) -> [String] {
         var refIds: [String] = []
         switch join {

@@ -15,23 +15,23 @@ extension String {
     ///   - dataType: The target data type to which the string should be converted.
     ///   - dateFormatter: The date formatter used to convert the string to a date if the data type is `date`.
     /// - Returns: The converted value of the specified type, or nil if the conversion fails.
-    func value<T>(
-        for dataType: ContentType.Property.DataType,
-        dateFormatter: DateFormatter
-    ) -> T? {
-        switch dataType {
-        case .bool:
-            return Bool(self) as? T
-        case .int:
-            return Int(self) as? T
-        case .double:
-            return Double(self) as? T
-        case .string:
-            return self as? T
-        case .date:
-            return dateFormatter.date(from: self) as? T
-        }
-    }
+//    func value<T>(
+//        for dataType: ContentType.Property.DataType,
+//        dateFormatter: DateFormatter
+//    ) -> T? {
+//        switch dataType {
+//        case .bool:
+//            return Bool(self) as? T
+//        case .int:
+//            return Int(self) as? T
+//        case .double:
+//            return Double(self) as? T
+//        case .string:
+//            return self as? T
+//        case .date:
+//            return dateFormatter.date(from: self) as? T
+//        }
+//    }
 }
 
 extension PageBundle {
@@ -44,26 +44,26 @@ extension PageBundle {
     ///   - filter: The filter to check.
     ///   - dateFormatter: The date formatter used to parse date values.
     /// - Returns: A boolean indicating whether the filter is satisfied.
-    func checkFilter(
-        _ filter: ContentType.Filter,
-        dateFormatter: DateFormatter
-    ) -> Bool {
-        guard
-            let field = frontMatter[filter.field],
-            let dataType = contentType.properties?[filter.field]?.type,
-            let filterValue: Any = filter.value.value(
-                for: dataType,
-                dateFormatter: dateFormatter
-            )
-        else {
-            return false
-        }
-
-        switch filter.method {
-        case .equals:
-            return areValuesEqual(field, filterValue)
-        }
-    }
+//    func checkFilter(
+//        _ filter: ContentType.Filter,
+//        dateFormatter: DateFormatter
+//    ) -> Bool {
+//        guard
+//            let field = frontMatter[filter.field],
+//            let dataType = contentType.properties?[filter.field]?.type,
+//            let filterValue: Any = filter.value.value(
+//                for: dataType,
+//                dateFormatter: dateFormatter
+//            )
+//        else {
+//            return false
+//        }
+//
+//        switch filter.method {
+//        case .equals:
+//            return areValuesEqual(field, filterValue)
+//        }
+//    }
 }
 
 /// Compares two values of any type for equality.
